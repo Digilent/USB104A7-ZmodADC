@@ -4,7 +4,7 @@ USB104A7 ZmodADC Demo
 Description
 -----------
 
-This project demonstrates how to use the ZmodADC with the USB104A7 board. This demo comes in two parts, the FPGA project and the PC console application. Vivado is used to build the hardware platform and Xilinx SDK is used to program the microblaze processor with the demo C/C++ application. The PC Console application establishes a connection with the USB104A7 through the USB DPTI port. This connection is used to download waveforms from the device and control the ZmodADC.
+This project demonstrates how to use the ZmodADC with the USB104A7 board. This demo comes in two parts, the FPGA project and the PC console application. Vivado is used to build the hardware platform and Xilinx SDK is used to program the microblaze processor with the demo C/C++ application. The DPTI port provides a USB connected synchronous FIFO interface between the PC software and FPGA logic. This interface connection is used to download waveforms from the device and control the ZmodADC.
 
 | Command			       			 | Function						                                                                  |
 | ---------------------    			 | ------------------------------------------------------------------------------------------------ |
@@ -25,6 +25,7 @@ Requirements
 * **USB104A7**: To purchase a USB104A7, see the [Digilent Store](https://store.digilentinc.com/usb104a7/)
 * **ZmodADC**: To purchase a ZmodADC, see the [Digilent Store](https://store.digilentinc.com/zmodadc/)
 * **Vivado 2019.1 Installation with Xilinx SDK**: To set up Vivado, see the [Installing Vivado and Digilent Board Files Tutorial](https://reference.digilentinc.com/vivado/installing-vivado/start).
+* **Adept Runtime**: Download links available on the [Adept Wiki](https://reference.digilentinc.com/reference/software/adept/start)
 * **Serial Terminal Emulator Application**: For more information see the [Installing and Using a Terminal Emulator Tutorial](https://reference.digilentinc.com/learn/programmable-logic/tutorials/tera-term).
 * **USB A Cable**
 * **5V DC Adapter**
