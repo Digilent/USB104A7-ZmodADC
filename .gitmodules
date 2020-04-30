@@ -1,0 +1,6 @@
+[submodule "FPGA/digilent-vivado-scripts"]
+	path = FPGA/digilent-vivado-scripts
+	url = https://github.com/digilent/digilent-vivado-scripts
+[submodule "FPGA/repo/vivado-library"]
+	path = FPGA/repo/vivado-library
+	url = https://github.com/digilent/vivado-library

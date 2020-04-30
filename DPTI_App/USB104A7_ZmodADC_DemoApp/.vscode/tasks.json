@@ -1,0 +1,46 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "type": "shell",
+            "label": "buildwin32",
+            "command": "gcc",
+            "args": [
+                "-g3",
+                "-O0",
+                "USB104A7_ZmodADCDemoApp.c",
+                "-o",
+                "${workspaceFolder}\\USB104A7_ZmodADCDemoApp.exe",
+                "-L${workspaceFolder}",
+                "-ldpti",
+                "-ldmgr",
+                "-DWIN32"
+            ],
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": "build"
+        },
+        {
+            "type": "shell",
+            "label": "buildlinux",
+            "command": "gcc",
+            "args": [
+                "-g3",
+                "-O0",
+                "USB104A7_ZmodADCDemoApp.c",
+                "-o",
+                "${workspaceFolder}/USB104A7_ZmodADCDemoApp.o",
+                "-Wl,-rpath=/usr/lib64/digilent/adept",
+                "-L/usr/lib64/digilent/adept",
+                "-ldpti",
+                "-ldmgr",
+                "-lpthread"
+            ],
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": "build"
+        }
+    ]
+}

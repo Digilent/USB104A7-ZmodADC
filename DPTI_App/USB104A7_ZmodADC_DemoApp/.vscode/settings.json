@@ -1,0 +1,15 @@
+{
+    "files.associations": {
+        "dmgr.h": "c",
+        "dpti.h": "c",
+        "stdio.h": "c",
+        "string.h": "c",
+        "stdlib.h": "c",
+        "thread": "c",
+        "processthreadsapi.h": "c",
+        "dpcdecl.h": "c",
+        "stdint.h": "c",
+        "string_view": "c",
+        "cctype": "c"
+    }
+}
