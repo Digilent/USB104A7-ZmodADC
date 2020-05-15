@@ -4,3 +4,7 @@
 [submodule "FPGA/repo/vivado-library"]
 	path = FPGA/repo/vivado-library
 	url = https://github.com/digilent/vivado-library
+[submodule "FPGA/sdk/USB104A7_ZmodADC_Demo/src/zmodlib"]
+	path = FPGA/sdk/USB104A7_ZmodADC_Demo/src/zmodlib
+	url = https://github.com/Digilent/zmodlib
+	branch = next

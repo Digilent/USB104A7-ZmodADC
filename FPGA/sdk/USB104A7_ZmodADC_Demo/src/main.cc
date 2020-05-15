@@ -5,7 +5,7 @@
 #include "platform.h"
 #include "xil_printf.h"
 #include "dpti/dpti.h"
-#include "ZmodADC1410/zmodadc1410.h"
+#include "zmodlib/ZmodADC1410/zmodadc1410.h"
 #include <sleep.h>
 
 XStatus DemoInitialize();
