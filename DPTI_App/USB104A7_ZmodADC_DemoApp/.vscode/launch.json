@@ -23,7 +23,7 @@
                     "ignoreFailures": true,
                 }
             ],
-            "preLaunchTask": "build"
+            "preLaunchTask": "buildwin32"
         },
         {
             "name": "Linux Debug",

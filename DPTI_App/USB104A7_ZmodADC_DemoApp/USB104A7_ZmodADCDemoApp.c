@@ -165,7 +165,10 @@ int main(int argc, char* argv[]){
 		//cmdState is set in the terminal thread when input is received.
 		if(cmdState == EXECUTE){
 			//Parse input
-			parseArgs(input);
+			if(parseArgs(input) == -1)
+			{
+				cmdState = GETINPUT;
+			}
 			
 		}
 
@@ -537,7 +540,7 @@ int parseArgs(char* input){
 * Prints the usage of the program
 */
 void printUsage(){
-	printf("USB104A7 ZmodDAC demo\n------------------------------\n");
+	printf("USB104A7 ZmodADC demo\n------------------------------\n");
 	printf("Commands\n");
 	printf("arm [path to waveform.csv]\t-\tArm the ADC to acquire data to be sent to a file\n");
 	printf("immediate/start\t\t-\tAcquire data immediately\n");
@@ -658,7 +661,7 @@ void* terminalThread(){
 		while(1){
 			printf("Channel %d:", channel);
 			fgets(input, sizeof(input), stdin);
-			cmdState=true;
+			cmdState = EXECUTE;
 			while(cmdState != GETINPUT);
 		}
 		return 0;
