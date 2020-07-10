@@ -35,7 +35,7 @@ Requirements
 Demo Setup
 ----------
 
-##### FPGA Project
+### FPGA Project
 1. Download the most recent release ZIP archive (`USB104A7-ZmodADC-*.zip`) from the repo's [releases page](https://github.com/Digilent/USB104A7-ZmodADC/releases).
 2. Extract the downloaded ZIP.
 NOTE: A precompiled bit file is available in the FPGA folder. This includes the FPGA configuration and compiled ELF file. This can be programmed to the FPGA using Vivado Hardware Manager or Digilent Adept.
@@ -52,16 +52,16 @@ NOTE: A precompiled bit file is available in the FPGA folder. This includes the 
 12. Lastly, the hardware platform must be linked to a hardware handoff, so that changes to the Vivado design can be brought into the SDK workspace. In Vivado, in the toolbar at the top of the window, select `File -> Export -> Export Hardware`. Make sure that the `Include bitstream` box is checked. Select a location. Any directory will do, but remember the selection. Click `OK`.
 13. In SDK, right click on the `design_1_wrapper_hw_platform_0` project, and select `Change Hardware Platform Specification`. Click `Yes` in response to the warning. In the resulting dialog, navigate to and select the .hdf hardware handoff file exported in the previous step, then click `OK`. Now, whenever a modified design is exported from Vivado, on top of the .hdf file, it can be applied to the hardware platform.
 
-##### Building the Console Application
+### Building the Console Application
 
-###### Using VS Code
+#### Using VS Code
 1. Open Visual Studio Code.
 2. Open the folder containing the Console Application in Visual Studio Code, found at `<extracted archive location>/DPTI_App/USB104A7_ZmodADC_DemoApp`.
 3. Click `Terminal -> Run Build Task`. Select `buildwin32`, for building under Windows, or `buildlinux` for building under Linux.
 NOTE: Build options can be configured in the `.vscode/tasks.json` file.
 NOTE: For Linux, the Adept Runtime needs to be installed from the [Adept 2](https://reference.digilentinc.com/reference/software/adept/start) wiki page under `Runtime - Latest Downloads`.
 
-###### Using GCC under Windows
+#### Using GCC under Windows
 1. Open a cmd window.
 2. `cd` into `<extracted archive location>/DPTI_App/USB104A7_ZmodADC_DemoApp`.
 3. Run
@@ -69,7 +69,7 @@ NOTE: For Linux, the Adept Runtime needs to be installed from the [Adept 2](http
 gcc USB104A7_ZmodADCDemoApp.c -g3 -O0 -o USB104A7_ZmodADCDemoApp.exe -L./ -ldpti -ldmgr
 ```
 
-###### Using GCC under Linux
+#### Using GCC under Linux
 1. Open a terminal.
 2. `cd` into `<extracted archive location>/DPTI_App/USB104A7_ZmodADC_DemoApp`.
 3. Run
