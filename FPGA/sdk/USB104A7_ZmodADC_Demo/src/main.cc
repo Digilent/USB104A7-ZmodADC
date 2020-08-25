@@ -79,10 +79,10 @@ void DemoRun(){
 	uint32_t param;
 	uint32_t channel=0;
 	uint32_t window = 0;
-	uint32_t triggerLevel=0;
 	size_t length = 0x3FFF;
 	bool armed=false;
 	bool gain=0;
+	uint32_t triggerLevel=getSignedRawFromVolt(0.5, gain);
 	bool coupling=0;
 	bool edge=0;
 	uint32_t rawData;
@@ -113,7 +113,7 @@ void DemoRun(){
 					//recvBuffer is too small to receive all of the data
 					free(sendBuffer);
 					sendBuffer=NULL;
-					if(channelBuffer!=NULL)realloc(channelBuffer, length*sizeof(uint32_t));
+					if(channelBuffer!=NULL)realloc(channelBuffer, length*sizeof(uint32_t));//Realloc channelbuffer to preserve old data
 				}
 				//Allocate memory to DPTI receive buffer
 				if(sendBuffer==NULL){
@@ -153,7 +153,7 @@ void DemoRun(){
 					break;
 				}
 				xil_printf("Data sent over DPTI\r\n");
-//				armed = true;
+				//armed = true;
 				break;
 			case IMMEDIATE_OP:
 				//If the new length is longer than a previous length, reallocate memory
@@ -161,9 +161,9 @@ void DemoRun(){
 					//recvBuffer is too small to receive all of the data
 					free(sendBuffer);
 					sendBuffer=NULL;
-					if(channelBuffer!=NULL)realloc(channelBuffer, length*sizeof(uint32_t));
+					if(channelBuffer!=NULL)realloc(channelBuffer, length*sizeof(uint32_t));//Realloc channelbuffer to preserve old data
 				}
-				//Allocate memory to DPTI send buffer
+				//Allocate memory to DPTI receive buffer
 				if(sendBuffer==NULL){
 					sendBuffer=(float*)malloc(length*sizeof(float));
 					szSendBuffer=length*sizeof(float);
@@ -213,11 +213,11 @@ void DemoRun(){
 				flevel = *(float*)&param;
 				param = getSignedRawFromVolt(*(float*)&param, gain);
 				if(param==0 || param>0x3FFF){
-					xil_printf("Error: Invalid float value: %d, expected [1-0x3FFF]\r\n", param);
+					xil_printf("Error: Invalid float value: %d (0x%02X), expected [1-0x3FFF]\r\n", param, param);
 					break;
 				}
 				triggerLevel = param;
-				xil_printf("Set trigger level to 0x%X (%d.%03dv)\r\n", param, (int)flevel, (int)(flevel*1000 - (int)(flevel)*1000));
+				xil_printf("Set trigger level to 0x%X (~%d.%03dv)\r\n", param, (int)flevel, (int)abs((flevel*1000 - (int)(flevel)*1000)));
 
 				break;
 			case SET_GAIN_OP:
@@ -232,14 +232,17 @@ void DemoRun(){
 				break;
 			case SET_TRIGGER_EDGE_OP:
 				edge = DPTI_GetParameter();
+				ZmodADC.setTrigger(channel, 0, triggerLevel, edge, window);
 				xil_printf("Trigger edge set to %s edge\r\n", (edge)? "Falling":"Rising");
 				break;
 			case SET_COUPLING_OP:
 				coupling = DPTI_GetParameter();
+				ZmodADC.setCoupling(channel, coupling);
 				xil_printf("Coupling set to %s\r\n", (coupling)?"AC":"DC");
 				break;
 			case SET_LENGTH_OP:
 				length = DPTI_GetParameter();
+				ZmodADC.setTransferLength(length);
 				xil_printf("Length set to %d (0x%02X)\r\n", length, length);
 				break;
 			default:
@@ -262,16 +265,20 @@ void DemoRun(){
 
 /**
  * Converts a signed raw value (provided by ZmodADC1410 IP core) to a value in Volts measure unit.
- * @param raw - the signed value as .
+ * @param raw - the signed value as 14 bit value.
  * @param gain 0 LOW and 1 HIGH
  * @return the Volts value.
  */
 uint32_t getSignedRawFromVolt(float volt, uint8_t gain)
 {
 	uint32_t raw;
+	if(volt==25){//If user specifies max positive value (25), return max positive value, since 14bit signed 0x2000 is -25.
+		return 0x1FFF;
+	}
 	float vMax = gain ? 1.0:25.0;
 	//float fval = (float)raw * vMax / (float)(1<<13);
 	raw = volt / vMax * (1<<13);
+	raw &= 0x3FFF;
 	return raw;
 }
 

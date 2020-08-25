@@ -84,7 +84,7 @@ uint8_t gain;
 char filename[256];
 uint8_t channel = 1;
 bool triggerEdge=0;
-float triggerLevel = 0;
+float triggerLevel = 0.5;
 bool coupling = 0;
 uint32_t length = 0x3FFF;
 char input[256];
@@ -138,7 +138,7 @@ int main(int argc, char* argv[]){
 //Initialize the DPTI connection.
 
 	if(status = initDPTI()!=0){
-		printf("Is the USB104A7 connected and accessible?\n");
+		printf("Is the USB104A7 connected and accessible? Adept runtime 2.20 or later is required.\n");
 		return status;
 	}else{
 		fDptiInit=true;
@@ -165,7 +165,10 @@ int main(int argc, char* argv[]){
 		//cmdState is set in the terminal thread when input is received.
 		if(cmdState == EXECUTE){
 			//Parse input
-			parseArgs(input);
+
+			if(parseArgs(input)== -1){
+				cmdState= GETINPUT;
+			}
 			
 		}
 
@@ -487,12 +490,32 @@ int parseArgs(char* input){
 				fSetTriggerEdge=true;
 			}
 			else if(strcmp(strlwr(arg), "falling")==0 || arg[0]=='0'){
-				triggerEdge = 0;
+				triggerEdge = 1;
 				fSetTriggerEdge=true;
 			}
 			
 			else{
 				printf("Invalid trigger edge value \"%s\". Expected rising, 1, falling, 0\n", arg);
+				return -1;
+			}
+		}
+		else if(strcmp(strlwr(arg), "coupling") == 0){
+			arg = strtok(NULL," \n");
+			if(arg==NULL){
+				printf("Please enter a coupling, EX: coupling ac\n");
+				return -1;
+			}
+			if(strcmp(strlwr(arg), "ac")==0){
+				coupling = 1;
+				fSetCoupling=true;
+			}
+			else if(strcmp(strlwr(arg), "dc")==0){
+				coupling = 0;
+				fSetCoupling=true;
+			}
+			
+			else{
+				printf("Invalid coupling value \"%s\". Expected [ac, dc]\n", arg);
 				return -1;
 			}
 		}
@@ -506,11 +529,16 @@ int parseArgs(char* input){
 				printf("Invalid trigger level value \"%s\". Please enter a trigger level value. EX: level 1.5\n", arg);
 			}
 			triggerLevel = atof(arg);
-			if(triggerLevel>0 && triggerLevel < 25){
+			if((gain == 0 && triggerLevel>=-25 && triggerLevel <= 25) || (gain == 1 && triggerLevel>=-1 && triggerLevel <= 1)){
 				fSetTriggerLevel = true;
 			}
 			else{
-				printf("Trigger Level value must be between 0 and \n");
+				if(gain==0){
+					printf("Trigger Level value must be between -25.0 and 25.0 when gain = 0\n");
+				}else{
+					printf("Trigger Level value must be between -1.0 and 1.0 when gain = 1\n");
+				}
+				
 				return -1;
 			}
 		}
@@ -537,13 +565,14 @@ int parseArgs(char* input){
 * Prints the usage of the program
 */
 void printUsage(){
-	printf("USB104A7 ZmodDAC demo\n------------------------------\n");
+	printf("USB104A7 ZmodADC demo\n------------------------------\n");
 	printf("Commands\n");
 	printf("arm [path to waveform.csv]\t-\tArm the ADC to acquire data to be sent to a file\n");
 	printf("immediate/start\t\t-\tAcquire data immediately\n");
 	printf("level [voltage]\t-\tSet trigger level voltage (default 0.5V).\n");
 	printf("edge [rising, falling]\t\t-\tSet the trigger edge to rising or falling edge (Default rising).\n");
 	printf("window [sample number]\t\t-\tSet the window position at which to run the data acquisition\n");
+	printf("coupling [ac,dc]\t-\tSet the ADC voltage coupling\n");
 
 	printf("stop\t\t-\tStop the ZmodADC Acquisition\n");
 	printf("ch1/ch2\t\t-\tSelect ADC channel\n");
@@ -658,7 +687,7 @@ void* terminalThread(){
 		while(1){
 			printf("Channel %d:", channel);
 			fgets(input, sizeof(input), stdin);
-			cmdState=true;
+			cmdState=EXECUTE;
 			while(cmdState != GETINPUT);
 		}
 		return 0;

@@ -35,28 +35,47 @@ Requirements
 Demo Setup
 ----------
 
-##### FPGA Project
-1. Download the most recent release ZIP archive ("USB104A7-ZmodADC-*.zip") from the repo's [releases page](https://github.com/Digilent/USB104A7-ZmodADC/releases).
+### FPGA Project
+1. Download the most recent release ZIP archive (`USB104A7-ZmodADC-*.zip`) from the repo's [releases page](https://github.com/Digilent/USB104A7-ZmodADC/releases).
 2. Extract the downloaded ZIP.
-NOTE: A precompiled bit file is available in the FPGA folder. This includes the FPGA configuration and compiled ELF file. This can be programmed to the FPGA using the vivado hardware manager or Digilent Adept.
-3. Open the XPR project file, found at \<archive extracted location\>/FPGA/vivado_proj/USB104A7_ZmodADC_Demo.xpr, included in the extracted release archive in Vivado 2019.1.
-4. Launch Xilinx SDK directly (not through the Vivado file menu). When prompted for a workspace, select "\<archive extracted location\>/sdk_workspace".
-5. Once the workspace opens, click the **Import** button. In the resulting dialog, first select *Existing Projects into Workspace*, then click **Next**. Navigate to and select the same sdk_workspace folder.
-6. Build the project. **Note**: *Errors are sometimes seen at this step. These are typically resolved by right-clicking on the BSP project and selecting Regenerate BSP Sources.*
+NOTE: A precompiled bit file is available in the FPGA folder. This includes the FPGA configuration and compiled ELF file. This can be programmed to the FPGA using Vivado Hardware Manager or Digilent Adept.
+3. Open the XPR project file, found at `<extracted archive location>/FPGA/vivado_proj/USB104A7_ZmodADC_Demo.xpr` in Vivado 2019.1.
+4. Launch Xilinx SDK. When prompted for a workspace, select `<extracted archive location>/sdk_workspace`.
+5. Once the workspace opens, click the `Import` button. In the resulting dialog, first select `Existing Projects into Workspace`, then click `Next`. Navigate to and select the same sdk_workspace folder.
+6. Build the project.
+**Note**: Errors are sometimes seen at this step. These are typically resolved by right-clicking on the BSP project and selecting Regenerate BSP Sources.
 7. Plug the ZmodADC into the USB104A7 Syzygy port. Plug in the 5v DC adapter and connect the USB104A7 to the PC using the USB cable.
-8. Open a serial terminal application (such as [TeraTerm](https://ttssh2.osdn.jp/index.html.en) and connect it to the USB104A7's serial port, using a baud rate of 115200.
-9. In the toolbar at the top of the SDK window, select *Xilinx -> Program FPGA*. Leave all fields as their defaults and click "Program".
-10. In the Project Explorer pane, right click on the "USB104A7_ZmodADC_Demo" application project and select "Run As -> Launch on Hardware (System Debugger)".
+8. Open a serial terminal application (such as [TeraTerm](https://ttssh2.osdn.jp/index.html.en)) and connect it to the USB104A7's serial port, using a baud rate of 115200.
+9. In the Project Explorer pane, right click on the `design_1_wrapper_hw_platform_0` project and select `Program FPGA`. Leave all fields as their default values and click `Program`.
+10. In the Project Explorer pane, right click on the `USB104A7_ZmodADC_Demo` application project and select `Run As -> Launch on Hardware (System Debugger)`.
 11. The application will now be running on the USB104A7. It can be interacted with as described in the first section of this README.
-12. Lastly, the hardware platform must be linked to a hardware handoff, so that changes to the Vivado design can be brought into the SDK workspace. In Vivado, in the toolbar at the top of the window, select *File -> Export -> Export Hardware*. Any Exported Location will do, but make sure to remember the selection, and make sure that the **Include bitstream** box is checked. Click **OK**.
-13. In SDK, right click on the \*_hw_platform_\* project, and select *Change Hardware Platform Specification*. Click **Yes** in response to the warning. In the resulting dialog, navigate to and select the .hdf hardware handoff file exported in the previous step, then click **OK**. Now, whenever a modified design is exported from Vivado, on top of the .hdf file, it can be applied to the hardware platform.
+12. Lastly, the hardware platform must be linked to a hardware handoff, so that changes to the Vivado design can be brought into the SDK workspace. In Vivado, in the toolbar at the top of the window, select `File -> Export -> Export Hardware`. Make sure that the `Include bitstream` box is checked. Select a location. Any directory will do, but remember the selection. Click `OK`.
+13. In SDK, right click on the `design_1_wrapper_hw_platform_0` project, and select `Change Hardware Platform Specification`. Click `Yes` in response to the warning. In the resulting dialog, navigate to and select the .hdf hardware handoff file exported in the previous step, then click `OK`. Now, whenever a modified design is exported from Vivado, on top of the .hdf file, it can be applied to the hardware platform.
 
-##### Building the Console Application using VS Code
+### Building the Console Application
+
+#### Using VS Code
 1. Open Visual Studio Code.
-2. Open the folder containing the Console Application in visual studio code, found at \<archive extracted location\>/DPTI_App/DPTITransferWaveform.
-3. To build, click Terminal -\> Run Build Task. Select either buildwin32 or buildlinux. This will run the build task found in tasks.json. This will run "gcc USB104A7_ZmodADCDemoApp.c -g3 -O0 -o \<dir\>\\USB104A7_ZmodADCDemoApp.exe -L./ -ldpti -ldmgr".
-NOTE1: Build options can be configured in the .vscode/tasks.json file.
-NOTE2: The linux dpti and dmgr shared objects can be downloaded from the [Adept 2](https://reference.digilentinc.com/reference/software/adept/start) wiki page under Runtime - Latest Downloads.
+2. Open the folder containing the Console Application in Visual Studio Code, found at `<extracted archive location>/DPTI_App/USB104A7_ZmodADC_DemoApp`.
+3. Click `Terminal -> Run Build Task`. Select `buildwin32`, for building under Windows, or `buildlinux` for building under Linux.
+NOTE: Build options can be configured in the `.vscode/tasks.json` file.
+NOTE: For Linux, the Adept Runtime needs to be installed from the [Adept 2](https://reference.digilentinc.com/reference/software/adept/start) wiki page under `Runtime - Latest Downloads`.
+
+#### Using GCC under Windows
+1. Open a cmd window.
+2. `cd` into `<extracted archive location>/DPTI_App/USB104A7_ZmodADC_DemoApp`.
+3. Run
+```
+gcc USB104A7_ZmodADCDemoApp.c -g3 -O0 -o USB104A7_ZmodADCDemoApp.exe -L./ -ldpti -ldmgr
+```
+
+#### Using GCC under Linux
+1. Open a terminal.
+2. `cd` into `<extracted archive location>/DPTI_App/USB104A7_ZmodADC_DemoApp`.
+3. Run
+```
+gcc USB104A7_ZmodADCDemoApp.c -g3 -O0 -o USB104A7_ZmodADCDemoApp -Wl,-rpath=/usr/lib64/digilent/adept -L/usr/lib64/digilent/adept -ldpti -ldmgr -lpthread
+```
 
 Next Steps
 ----------
